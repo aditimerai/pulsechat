@@ -1,0 +1,109 @@
+@let conv = chatService.selectedConversation();
+@let messages = chatService.currentMessages();
+@let typingUsers = chatService.currentTypingUsers();
+
+<!-- ── Chat window ──────────────────────────────────────────────────────── -->
+<div class="chat-window">
+
+  <!-- Header -->
+  <header class="chat-header">
+    <div class="chat-header__info">
+      <div class="header-avatar" [style.background]="getAvatarColor(conv?.name || '')">
+        {{ getInitials(conv?.name || '') }}
+      </div>
+      <div class="header-meta">
+        <span class="header-name">{{ conv?.name }}</span>
+        @if (conv?.isOnline) {
+          <span class="header-status online">Online</span>
+        } @else {
+          <span class="header-status offline">Offline</span>
+        }
+      </div>
+    </div>
+    <div class="chat-header__actions">
+      <button mat-icon-button matTooltip="Search messages">
+        <mat-icon>search</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="More options">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </div>
+  </header>
+
+  <!-- Message list -->
+  <div class="message-list" #messageList>
+
+    @if (chatService.isLoading()) {
+      <div class="loading-state">
+        <mat-spinner diameter="32"></mat-spinner>
+        <span>Loading messages…</span>
+      </div>
+    }
+
+    @if (!chatService.isLoading() && messages.length === 0) {
+      <div class="no-messages">
+        <mat-icon>chat_bubble_outline</mat-icon>
+        <p>No messages yet. Say hello!</p>
+      </div>
+    }
+
+    @for (msg of messages; track msg.id; let i = $index) {
+
+      <!-- Date divider -->
+      @if (showDateDivider(messages, i)) {
+        <div class="date-divider">
+          <span>{{ formatDividerDate(msg.sentAt) }}</span>
+        </div>
+      }
+
+      <!-- Message bubble -->
+      <div
+        class="message-row"
+        [class.message-row--own]="isOwnMessage(msg)"
+        [class.message-row--other]="!isOwnMessage(msg)"
+        [class.message-row--new-group]="isNewGroup(messages, i)"
+      >
+        <!-- Sender avatar (only for received messages, first in group) -->
+        @if (!isOwnMessage(msg) && isNewGroup(messages, i)) {
+          <div class="msg-avatar" [style.background]="getAvatarColor(msg.senderName)">
+            {{ getInitials(msg.senderName) }}
+          </div>
+        } @else if (!isOwnMessage(msg)) {
+          <div class="msg-avatar-spacer"></div>
+        }
+
+        <div class="msg-body">
+          <!-- Sender name (first in group, other person only) -->
+          @if (!isOwnMessage(msg) && isNewGroup(messages, i)) {
+            <span class="msg-sender-name">{{ msg.senderName }}</span>
+          }
+
+          <!-- Bubble -->
+          <div
+            class="bubble"
+            [class.bubble--sent]="isOwnMessage(msg)"
+            [class.bubble--received]="!isOwnMessage(msg)"
+          >
+            <span class="bubble-text">{{ msg.content }}</span>
+            <span class="bubble-meta">{{ msg.sentAt | date:'HH:mm' }}</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Typing indicator -->
+    @if (typingUsers.length > 0) {
+      <div class="typing-indicator">
+        <div class="typing-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <span class="typing-text">{{ formatTypingText(typingUsers) }}</span>
+      </div>
+    }
+
+  </div><!-- /message-list -->
+
+  <!-- Message input -->
+  <app-message-input></app-message-input>
+
+</div>

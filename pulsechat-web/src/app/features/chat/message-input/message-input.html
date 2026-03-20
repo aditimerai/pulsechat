@@ -1,0 +1,26 @@
+<!-- ── Input bar ───────────────────────────────────────────────────────── -->
+<div class="input-bar">
+
+  <div class="input-wrap">
+    <textarea
+      class="message-textarea"
+      placeholder="Type a message…"
+      [(ngModel)]="messageText"
+      (input)="onInput()"
+      (keydown)="onKeyDown($event)"
+      rows="1"
+      maxlength="2000"
+    ></textarea>
+  </div>
+
+  <button
+    class="send-btn"
+    mat-icon-button
+    [disabled]="!messageText.trim()"
+    matTooltip="Send (Enter)"
+    (click)="sendMessage()"
+  >
+    <mat-icon>send</mat-icon>
+  </button>
+
+</div>

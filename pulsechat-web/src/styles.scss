@@ -1,0 +1,90 @@
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$violet-palette,
+        tertiary: mat.$cyan-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+body {
+  color-scheme: light;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+  height: 100%;
+}
+
+// ── Chat design tokens ────────────────────────────────────────────────────
+:root {
+  // Sidebar
+  --sidebar-bg: #1e1e2e;
+  --sidebar-header-bg: #16162a;
+  --sidebar-text: #cdd6f4;
+  --sidebar-subtext: #a6adc8;
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-hover: rgba(255, 255, 255, 0.06);
+  --sidebar-active: rgba(108, 99, 255, 0.25);
+  --sidebar-active-border: #6c63ff;
+  --sidebar-width: 320px;
+
+  // Chat area
+  --chat-bg: #f0f2f5;
+  --chat-header-bg: #ffffff;
+  --chat-header-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  // Bubbles
+  --bubble-sent-bg: #6c63ff;
+  --bubble-sent-text: #ffffff;
+  --bubble-received-bg: #ffffff;
+  --bubble-received-text: #1e1e2e;
+  --bubble-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  // Accents
+  --primary: #6c63ff;
+  --primary-hover: #5a52e0;
+  --online-color: #4caf50;
+  --offline-color: #9e9e9e;
+
+  // Input
+  --input-bg: #ffffff;
+  --input-border: #e0e0e0;
+
+  // Scrollbar
+  --scrollbar-thumb: rgba(0, 0, 0, 0.15);
+  --scrollbar-track: transparent;
+}
+
+// ── Global scrollbar ───────────────────────────────────────────────────────
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar {
+  width: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+// ── Utility ────────────────────────────────────────────────────────────────
+.text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

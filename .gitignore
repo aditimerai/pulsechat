@@ -10,3 +10,9 @@
 /PulseChat/PulseChat.Infrastructure/bin/
 /PulseChat/PulseChat.Infrastructure/Class1.cs
 /PulseChat/PulseChat.Infrastructure/obj/
+/pulsechat-web/.angular
+/pulsechat-web/.vscode/
+/pulsechat-web/.editorconfig
+/pulsechat-web/.prettierrc
+/pulsechat-web/node_modules/
+/pulsechat-web/dist/

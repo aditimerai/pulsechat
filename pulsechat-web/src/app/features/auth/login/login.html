@@ -1,0 +1,86 @@
+<div class="auth-page">
+
+  <!-- Left panel — branding -->
+  <div class="auth-brand">
+    <div class="brand-logo">
+      <span class="brand-logo__icon">⚡</span>
+    </div>
+    <h1 class="brand-title">PulseChat</h1>
+    <p class="brand-tagline">Real-time conversations, seamlessly connected.</p>
+    <div class="brand-dots">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <!-- Right panel — form -->
+  <div class="auth-form-panel">
+    <div class="auth-card">
+
+      <div class="auth-card__header">
+        <h2 class="auth-card__title">Welcome back</h2>
+        <p class="auth-card__subtitle">Sign in to your account</p>
+      </div>
+
+      @if (error) {
+        <div class="auth-error">
+          <span class="auth-error__icon">!</span>
+          {{ error }}
+        </div>
+      }
+
+      <div class="auth-fields">
+        <div class="field-group">
+          <label class="field-label" for="email">Email address</label>
+          <input
+            id="email"
+            class="field-input"
+            type="email"
+            placeholder="you@example.com"
+            [(ngModel)]="email"
+            (keydown.enter)="login()"
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="password">Password</label>
+          <div class="field-input-wrap">
+            <input
+              id="password"
+              class="field-input"
+              [type]="showPassword ? 'text' : 'password'"
+              placeholder="Enter your password"
+              [(ngModel)]="password"
+              (keydown.enter)="login()"
+              autocomplete="current-password"
+            />
+            <button class="field-toggle" type="button" (click)="showPassword = !showPassword" tabindex="-1">
+              {{ showPassword ? '🙈' : '👁️' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button
+        class="auth-btn auth-btn--primary"
+        [class.auth-btn--loading]="loading"
+        [disabled]="loading"
+        (click)="login()"
+      >
+        @if (loading) {
+          <span class="btn-spinner"></span>
+          Signing in…
+        } @else {
+          Sign in
+        }
+      </button>
+
+      <p class="auth-footer">
+        Don't have an account?
+        <a class="auth-link" routerLink="/register">Create one</a>
+      </p>
+
+    </div>
+  </div>
+
+</div>

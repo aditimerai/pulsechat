@@ -1,0 +1,73 @@
+// ── Input bar ──────────────────────────────────────────────────────────────
+.input-bar {
+  display: flex;
+  align-items: flex-end;
+  padding: 10px 16px 12px;
+  gap: 10px;
+  background: var(--chat-header-bg);
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  flex-shrink: 0;
+}
+
+// ── Textarea wrapper ───────────────────────────────────────────────────────
+.input-wrap {
+  flex: 1;
+  background: #f4f6f8;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  padding: 9px 14px;
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:focus-within {
+    border-color: rgba(108, 99, 255, 0.4);
+    background: #fff;
+  }
+}
+
+.message-textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  resize: none;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #1e1e2e;
+  font-family: inherit;
+  max-height: 120px;
+  overflow-y: auto;
+
+  &::placeholder {
+    color: #adb5bd;
+  }
+}
+
+// ── Send button ────────────────────────────────────────────────────────────
+.send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px !important;
+  background: var(--primary) !important;
+  color: #fff !important;
+  flex-shrink: 0;
+  transition: background 0.15s, opacity 0.15s;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover:not([disabled]) {
+    background: var(--primary-hover) !important;
+  }
+
+  &[disabled] {
+    background: #e8eaed !important;
+    color: #c5c5c5 !important;
+    opacity: 1;
+  }
+}

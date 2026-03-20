@@ -1,0 +1,107 @@
+<div class="auth-page">
+
+  <!-- Left panel — branding -->
+  <div class="auth-brand">
+    <div class="brand-logo">
+      <span class="brand-logo__icon">⚡</span>
+    </div>
+    <h1 class="brand-title">PulseChat</h1>
+    <p class="brand-tagline">Join thousands having real-time conversations.</p>
+    <div class="brand-dots">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <!-- Right panel — form -->
+  <div class="auth-form-panel">
+    <div class="auth-card">
+
+      <div class="auth-card__header">
+        <h2 class="auth-card__title">Create account</h2>
+        <p class="auth-card__subtitle">Get started — it's free</p>
+      </div>
+
+      @if (error) {
+        <div class="auth-error">
+          <span class="auth-error__icon">!</span>
+          {{ error }}
+        </div>
+      }
+
+      @if (success) {
+        <div class="auth-success">
+          <span>✓</span>
+          Account created! Redirecting to login…
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="register()">
+        <div class="auth-fields">
+
+          <div class="field-group">
+            <label class="field-label" for="username">Username</label>
+            <input
+              id="username"
+              class="field-input"
+              type="text"
+              placeholder="Choose a username"
+              formControlName="username"
+              autocomplete="username"
+            />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="email">Email address</label>
+            <input
+              id="email"
+              class="field-input"
+              type="email"
+              placeholder="you@example.com"
+              formControlName="email"
+              autocomplete="email"
+            />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="password">Password</label>
+            <div class="field-input-wrap">
+              <input
+                id="password"
+                class="field-input"
+                [type]="showPassword ? 'text' : 'password'"
+                placeholder="At least 8 characters"
+                formControlName="password"
+                autocomplete="new-password"
+              />
+              <button class="field-toggle" type="button" (click)="showPassword = !showPassword" tabindex="-1">
+                {{ showPassword ? '🙈' : '👁️' }}
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <button
+          class="auth-btn auth-btn--primary"
+          type="submit"
+          [class.auth-btn--loading]="loading"
+          [disabled]="loading || form.invalid"
+        >
+          @if (loading) {
+            <span class="btn-spinner"></span>
+            Creating account…
+          } @else {
+            Create account
+          }
+        </button>
+      </form>
+
+      <p class="auth-footer">
+        Already have an account?
+        <a class="auth-link" routerLink="/login">Sign in</a>
+      </p>
+
+    </div>
+  </div>
+
+</div>
