@@ -53,6 +53,16 @@ namespace PulseChat.API.Controllers
                 .Select(m => new ConversationSummaryDto
                 {
                     Id = m.ConversationId,
+                    // For 1-on-1 chats: use the other person's username as the conversation name.
+                    // FirstOrDefault falls back to empty string if somehow no other member exists.
+                    Name = m.Conversation.Members
+                        .Where(cm => cm.UserId != userId)
+                        .Select(cm => cm.User.Username)
+                        .FirstOrDefault() ?? string.Empty,
+                    ParticipantId = m.Conversation.Members
+                        .Where(cm => cm.UserId != userId)
+                        .Select(cm => (Guid?)cm.UserId)
+                        .FirstOrDefault(),
                     Members = m.Conversation.Members
                         .Select(cm => new MemberDto
                         {

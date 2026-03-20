@@ -16,6 +16,7 @@ export class ChatService {
   readonly isConnected = signal(false);
   readonly isLoading = signal(false);
   readonly createConvError = signal<string | null>(null);
+  readonly profileVisible = signal(false);
 
   private readonly messagesMap = signal<Map<string, Message[]>>(new Map());
   private readonly typingMap = signal<Map<string, string[]>>(new Map());
@@ -148,11 +149,19 @@ export class ChatService {
   }
 
   private normalizeMessage(raw: any): Message {
+    // Handle backends that return sender as a nested object
+    const senderObj = raw.sender && typeof raw.sender === 'object' ? raw.sender : null;
     return {
       id: raw.id ?? raw.messageId ?? crypto.randomUUID(),
       conversationId: raw.conversationId,
-      senderId: raw.senderId ?? raw.userId ?? raw.authorId ?? '',
-      senderName: raw.senderName ?? raw.sender ?? raw.username ?? raw.authorName ?? 'Unknown',
+      senderId:
+        raw.senderId ?? raw.userId ?? raw.authorId ??
+        senderObj?.id ?? senderObj?.userId ?? '',
+      senderName:
+        raw.senderName ??
+        (typeof raw.sender === 'string' ? raw.sender : null) ??
+        senderObj?.username ?? senderObj?.userName ?? senderObj?.name ??
+        raw.username ?? raw.authorName ?? 'Unknown',
       content: raw.content ?? raw.text ?? raw.body ?? raw.message ?? '',
       sentAt: raw.sentAt ?? raw.timestamp ?? raw.createdAt ?? new Date().toISOString(),
     };
@@ -345,5 +354,23 @@ export class ChatService {
       return payload.unique_name || payload.name ||
         payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || '';
     } catch { return ''; }
+  }
+
+  getCurrentEmail(): string {
+    const token = localStorage.getItem('token');
+    if (!token) return '';
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.email ||
+        payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || '';
+    } catch { return ''; }
+  }
+
+  clearConversationMessages(convId: string) {
+    this.messagesMap.update((map) => {
+      const updated = new Map(map);
+      updated.set(convId, []);
+      return updated;
+    });
   }
 }

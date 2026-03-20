@@ -3,7 +3,6 @@
   display: flex;
   height: 100vh;
   overflow: hidden;
-  background: var(--chat-bg);
 }
 
 // ── Sidebar ────────────────────────────────────────────────────────────────
@@ -14,7 +13,6 @@
   background: var(--sidebar-bg);
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--sidebar-border);
   overflow: hidden;
 }
 
@@ -27,7 +25,7 @@
   background: var(--chat-bg);
 }
 
-// ── Empty state ────────────────────────────────────────────────────────────
+// ── Empty / welcome state ──────────────────────────────────────────────────
 .empty-state {
   flex: 1;
   display: flex;
@@ -35,40 +33,38 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 32px;
+  padding: 40px;
   height: 100%;
+  background: var(--chat-bg);
+  gap: 0;
 
-  &__icon {
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
-    background: rgba(108, 99, 255, 0.1);
+  &__visual {
+    width: 80px;
+    height: 80px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(108, 99, 255, 0.12), rgba(108, 99, 255, 0.06));
+    border: 2px solid rgba(108, 99, 255, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 24px;
-
-    mat-icon {
-      font-size: 48px;
-      width: 48px;
-      height: 48px;
-      color: var(--primary);
-    }
+    font-size: 36px;
   }
 
   &__title {
-    font-size: 22px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 700;
     color: #1e1e2e;
     margin: 0 0 8px;
+    letter-spacing: -0.2px;
   }
 
   &__subtitle {
-    font-size: 14px;
-    color: #757575;
+    font-size: 13px;
+    color: #9ca3af;
     margin: 0;
-    max-width: 280px;
-    line-height: 1.6;
+    max-width: 260px;
+    line-height: 1.65;
   }
 }
 
@@ -79,12 +75,7 @@
     min-width: 0;
     position: absolute;
     z-index: 10;
-    top: 0;
-    left: 0;
-    bottom: 0;
+    top: 0; left: 0; bottom: 0;
   }
-
-  .main-panel {
-    width: 100%;
-  }
+  .main-panel { width: 100%; }
 }

@@ -52,8 +52,15 @@ export class ConversationList implements OnInit {
     return this.chatService.selectedConversation()?.id === conv.id;
   }
 
+  toggleProfile() {
+    const next = !this.chatService.profileVisible();
+    this.chatService.profileVisible.set(next);
+    if (next) this.showNewChat.set(false); // close new-chat panel if open
+  }
+
   toggleNewChat() {
     this.showNewChat.update((v) => !v);
+    if (this.showNewChat()) this.chatService.profileVisible.set(false);
     if (this.showNewChat() && this.users().length === 0) {
       this.loadingUsers.set(true);
       this.chatService.getUsers().subscribe({

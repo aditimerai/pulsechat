@@ -14,20 +14,29 @@
       <div class="header-meta">
         <span class="header-name">{{ conv?.name }}</span>
         @if (conv?.isOnline) {
-          <span class="header-status online">Online</span>
-        } @else {
-          <span class="header-status offline">Offline</span>
+          <span class="header-status online">
+            <span class="status-dot"></span>Online
+          </span>
         }
       </div>
     </div>
     <div class="chat-header__actions">
-      <button mat-icon-button matTooltip="Search messages">
-        <mat-icon>search</mat-icon>
-      </button>
-      <button mat-icon-button matTooltip="More options">
+      <button mat-icon-button [matMenuTriggerFor]="moreMenu" matTooltip="More options">
         <mat-icon>more_vert</mat-icon>
       </button>
     </div>
+
+    <!-- More options menu -->
+    <mat-menu #moreMenu="matMenu">
+      <button mat-menu-item (click)="openProfile()">
+        <mat-icon>account_circle</mat-icon>
+        My Profile
+      </button>
+      <button mat-menu-item (click)="clearChat()">
+        <mat-icon>delete_sweep</mat-icon>
+        Clear chat
+      </button>
+    </mat-menu>
   </header>
 
   <!-- Message list -->
@@ -65,8 +74,9 @@
       >
         <!-- Sender avatar (only for received messages, first in group) -->
         @if (!isOwnMessage(msg) && isNewGroup(messages, i)) {
-          <div class="msg-avatar" [style.background]="getAvatarColor(msg.senderName)">
-            {{ getInitials(msg.senderName) }}
+          @let avatarName = (msg.senderName && msg.senderName !== 'Unknown') ? msg.senderName : (conv?.name || '?');
+          <div class="msg-avatar" [style.background]="getAvatarColor(avatarName)">
+            {{ getInitials(avatarName) }}
           </div>
         } @else if (!isOwnMessage(msg)) {
           <div class="msg-avatar-spacer"></div>
@@ -75,7 +85,10 @@
         <div class="msg-body">
           <!-- Sender name (first in group, other person only) -->
           @if (!isOwnMessage(msg) && isNewGroup(messages, i)) {
-            <span class="msg-sender-name">{{ msg.senderName }}</span>
+            @let displayName = (msg.senderName && msg.senderName !== 'Unknown') ? msg.senderName : (conv?.name || '');
+            @if (displayName) {
+              <span class="msg-sender-name">{{ displayName }}</span>
+            }
           }
 
           <!-- Bubble -->

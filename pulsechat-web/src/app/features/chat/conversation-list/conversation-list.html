@@ -1,94 +1,155 @@
 <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
 <div class="sidebar-inner">
 
-  <!-- Header -->
-  <header class="sidebar-header">
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
+  <div class="sidebar-header">
     <div class="sidebar-header__brand">
-      <div class="brand-icon">
-        <mat-icon>bolt</mat-icon>
-      </div>
+      <div class="brand-logo">⚡</div>
       <span class="brand-name">PulseChat</span>
     </div>
     <div class="sidebar-header__actions">
-      @if (chatService.isConnected()) {
-        <span class="connection-dot connected" matTooltip="Connected"></span>
-      } @else {
-        <span class="connection-dot disconnected" matTooltip="Reconnecting…"></span>
-      }
-      <button mat-icon-button class="icon-btn" matTooltip="New conversation"
-              (click)="toggleNewChat()">
-        <mat-icon>{{ showNewChat() ? 'close' : 'edit_square' }}</mat-icon>
+      <span
+        class="conn-indicator"
+        [class.conn-indicator--on]="chatService.isConnected()"
+        [class.conn-indicator--off]="!chatService.isConnected()"
+        [matTooltip]="chatService.isConnected() ? 'Connected' : 'Reconnecting…'"
+      ></span>
+      <button
+        mat-icon-button class="hdr-btn"
+        matTooltip="My profile"
+        (click)="toggleProfile()"
+      >
+        <mat-icon>{{ chatService.profileVisible() ? 'arrow_back' : 'account_circle' }}</mat-icon>
       </button>
-      <button mat-icon-button class="icon-btn" matTooltip="Logout" (click)="logout()">
+      <button
+        mat-icon-button class="hdr-btn"
+        [matTooltip]="showNewChat() ? 'Back' : 'New conversation'"
+        (click)="toggleNewChat()"
+      >
+        <mat-icon>{{ showNewChat() ? 'arrow_back' : 'edit_square' }}</mat-icon>
+      </button>
+      <button mat-icon-button class="hdr-btn" matTooltip="Logout" (click)="logout()">
         <mat-icon>logout</mat-icon>
       </button>
     </div>
-  </header>
+  </div>
 
-  <!-- Search -->
-  @if (!showNewChat()) {
-    <div class="search-box">
-      <mat-icon class="search-icon">search</mat-icon>
-      <input
-        class="search-input"
-        type="text"
-        placeholder="Search conversations…"
-        [value]="searchQuery()"
-        (input)="searchQuery.set($any($event.target).value)"
-      />
+  <!-- ── Profile panel ──────────────────────────────────────────────────── -->
+  @if (chatService.profileVisible()) {
+    <div class="profile-panel">
+      <div class="profile-avatar" [style.background]="getAvatarColor(chatService.getCurrentUsername())">
+        {{ getInitials(chatService.getCurrentUsername()) }}
+      </div>
+      <h3 class="profile-name">{{ chatService.getCurrentUsername() || 'You' }}</h3>
+      @if (chatService.getCurrentEmail()) {
+        <p class="profile-email">{{ chatService.getCurrentEmail() }}</p>
+      }
+      <div class="profile-divider"></div>
+      <div class="profile-info-rows">
+        <div class="profile-row">
+          <mat-icon class="profile-row__icon">person</mat-icon>
+          <div class="profile-row__text">
+            <span class="profile-row__label">Username</span>
+            <span class="profile-row__value">{{ chatService.getCurrentUsername() || '—' }}</span>
+          </div>
+        </div>
+        @if (chatService.getCurrentEmail()) {
+          <div class="profile-row">
+            <mat-icon class="profile-row__icon">mail</mat-icon>
+            <div class="profile-row__text">
+              <span class="profile-row__label">Email</span>
+              <span class="profile-row__value">{{ chatService.getCurrentEmail() }}</span>
+            </div>
+          </div>
+        }
+        <div class="profile-row">
+          <mat-icon class="profile-row__icon">circle</mat-icon>
+          <div class="profile-row__text">
+            <span class="profile-row__label">Status</span>
+            <span class="profile-row__value profile-row__value--online">Online</span>
+          </div>
+        </div>
+      </div>
+      <button class="profile-logout-btn" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Sign out
+      </button>
     </div>
   }
 
-  <!-- ── New chat panel ──────────────────────────────────────────────────── -->
+  <!-- ── Search (conversations view) ──────────────────────────────────────── -->
+  @if (!showNewChat() && !chatService.profileVisible()) {
+    <div class="search-row">
+      <div class="search-box">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Search conversations"
+          [value]="searchQuery()"
+          (input)="searchQuery.set($any($event.target).value)"
+        />
+      </div>
+    </div>
+  }
+
+  <!-- ── New chat panel ─────────────────────────────────────────────────── -->
   @if (showNewChat()) {
     <div class="panel-section">
-      <div class="section-label">Start a new chat</div>
+      <div class="panel-title">
+        <mat-icon class="panel-title__icon">person_add</mat-icon>
+        New Conversation
+      </div>
 
       @if (chatService.createConvError()) {
-        <div class="conv-error">
+        <div class="inline-error">
           <mat-icon>error_outline</mat-icon>
-          <span>{{ chatService.createConvError() }}</span>
+          {{ chatService.createConvError() }}
         </div>
       }
 
       @if (loadingUsers()) {
-        <div class="spinner-wrap">
+        <div class="center-spinner">
           <mat-spinner diameter="28"></mat-spinner>
         </div>
+      } @else if (users().length === 0) {
+        <div class="empty-hint">No other users found</div>
+      } @else {
+        <ul class="user-list">
+          @for (user of users(); track user.id) {
+            <li class="user-item" (click)="startChat(user)">
+              <div class="u-avatar" [style.background]="getAvatarColor(user.username)">
+                {{ getInitials(user.username) }}
+                @if (user.isOnline) {
+                  <span class="u-avatar__dot"></span>
+                }
+              </div>
+              <div class="u-info">
+                <span class="u-name">{{ user.username }}</span>
+                <span class="u-email">{{ user.email }}</span>
+              </div>
+              <mat-icon class="u-arrow">chevron_right</mat-icon>
+            </li>
+          }
+        </ul>
       }
-
-      @if (!loadingUsers() && users().length === 0) {
-        <div class="empty-list">No users found</div>
-      }
-
-      <ul class="conv-list">
-        @for (user of users(); track user.id) {
-          <li class="conv-item" (click)="startChat(user)">
-            <div class="avatar" [style.background]="getAvatarColor(user.username)">
-              {{ getInitials(user.username) }}
-            </div>
-            <div class="conv-info">
-              <span class="conv-name">{{ user.username }}</span>
-              <span class="conv-sub">{{ user.email }}</span>
-            </div>
-          </li>
-        }
-      </ul>
     </div>
   }
 
-  <!-- ── Conversations list ─────────────────────────────────────────────── -->
-  @if (!showNewChat()) {
+  <!-- ── Conversation list ───────────────────────────────────────────────── -->
+  @if (!showNewChat() && !chatService.profileVisible()) {
     <div class="panel-section">
-      <div class="section-label">Messages</div>
 
       @if (filteredConversations.length === 0) {
-        <div class="empty-list">
-          @if (searchQuery()) {
-            No results for "{{ searchQuery() }}"
-          } @else {
-            No conversations yet
-          }
+        <div class="empty-state">
+          <mat-icon>forum</mat-icon>
+          <span>
+            @if (searchQuery()) {
+              No results for "{{ searchQuery() }}"
+            } @else {
+              No conversations yet.<br/>Start one with the edit button above.
+            }
+          </span>
         </div>
       }
 
@@ -99,28 +160,23 @@
             [class.conv-item--active]="isSelected(conv)"
             (click)="selectConversation(conv)"
           >
-            <!-- Avatar -->
-            <div class="avatar-wrap">
-              <div class="avatar" [style.background]="getAvatarColor(conv.name)">
+            <div class="c-avatar-wrap">
+              <div class="c-avatar" [style.background]="getAvatarColor(conv.name)">
                 {{ getInitials(conv.name) }}
               </div>
               @if (conv.isOnline) {
-                <span class="online-dot"></span>
+                <span class="c-online-dot"></span>
               }
             </div>
-
-            <!-- Info -->
-            <div class="conv-info">
-              <div class="conv-row">
-                <span class="conv-name">{{ conv.name }}</span>
-                <span class="conv-time">{{ formatTime(conv.lastMessageTime) }}</span>
+            <div class="c-info">
+              <div class="c-row c-row--top">
+                <span class="c-name">{{ conv.name }}</span>
+                <span class="c-time">{{ formatTime(conv.lastMessageTime) }}</span>
               </div>
-              <div class="conv-row">
-                <span class="conv-sub text-truncate">
-                  {{ conv.lastMessage || 'No messages yet' }}
-                </span>
+              <div class="c-row c-row--bottom">
+                <span class="c-preview">{{ conv.lastMessage || 'No messages yet' }}</span>
                 @if (conv.unreadCount > 0) {
-                  <span class="badge">{{ conv.unreadCount > 99 ? '99+' : conv.unreadCount }}</span>
+                  <span class="c-badge">{{ conv.unreadCount > 99 ? '99+' : conv.unreadCount }}</span>
                 }
               </div>
             </div>
