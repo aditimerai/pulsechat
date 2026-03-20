@@ -1,0 +1,12 @@
+/PulseChat/PulseChat.API/bin
+/PulseChat/PulseChat.API/obj
+/PulseChat/PulseChat.API/Properties/
+/PulseChat/PulseChat.Application/bin/
+/PulseChat/PulseChat.Application/Class1.cs
+/PulseChat/PulseChat.Application/obj/
+/PulseChat/PulseChat.Domain/bin/
+/PulseChat/PulseChat.Domain/Class1.cs
+/PulseChat/PulseChat.Domain/obj/
+/PulseChat/PulseChat.Infrastructure/bin/
+/PulseChat/PulseChat.Infrastructure/Class1.cs
+/PulseChat/PulseChat.Infrastructure/obj/

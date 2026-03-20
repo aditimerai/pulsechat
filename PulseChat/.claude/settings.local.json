@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmd /c \"taskkill /IM dotnet.exe /F\")",
+      "Bash(cmd /c \"tasklist | findstr /i dotnet\")",
+      "Bash(dotnet build:*)",
+      "Bash(cmd /c \"taskkill /PID 24300 /F\")",
+      "Bash(dotnet format:*)"
+    ]
+  }
+}
